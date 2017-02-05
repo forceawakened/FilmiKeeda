@@ -1,0 +1,15 @@
+<resources>
+    <dimen name="padding_sm">4dp</dimen>
+    <dimen name="padding_md">8dp</dimen>
+    <dimen name="padding_lg">12dp</dimen>
+    <dimen name="padding_xlg">16dp</dimen>
+    <dimen name="width_movie_col">128dp</dimen>
+    <dimen name="height_movie_col">128dp</dimen>
+    <dimen name="height_movie_row">128dp</dimen>
+    <dimen name="text_size_xsm">12sp</dimen>
+    <dimen name="text_size_sm">16sp</dimen>
+    <dimen name="text_size_md">20sp</dimen>
+    <dimen name="text_size_lg">24sp</dimen>
+    <dimen name="text_size_xlg">28sp</dimen>
+    <dimen name="scroll_bar_sm">2dp</dimen>
+</resources>

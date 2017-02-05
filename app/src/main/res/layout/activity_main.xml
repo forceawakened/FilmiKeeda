@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context="com.forceawakened.www.filmikeeda.MainActivity">
+
+    <TextView
+        android:id="@+id/text_upcoming"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_md"
+        android:text="@string/string_upcoming"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size_md"/>
+
+    <FrameLayout
+        android:id="@+id/content_upcoming"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_movie_col"/>
+
+    <TextView
+        android:id="@+id/text_now_playing"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_md"
+        android:text="@string/string_now_playing"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size_md"/>
+
+    <FrameLayout
+        android:id="@+id/content_now_playing"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_movie_col"/>/>
+
+    <TextView
+        android:id="@+id/text_most_popular"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_md"
+        android:gravity="center"
+        android:text="@string/string_most_popular"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size_md"/>
+
+    <FrameLayout
+        android:id="@+id/content_most_popular"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_movie_col"/>/>
+
+</LinearLayout>
