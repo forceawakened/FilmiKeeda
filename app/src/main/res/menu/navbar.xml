@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="single">
+        <item android:id="@+id/homepage"
+            android:icon="@drawable/navbar_bullet"
+            android:title="@string/homepage"/>
+        <item android:id="@+id/by_genres"
+            android:icon="@drawable/navbar_bullet"
+            android:title="@string/by_genres"/>
+        <item android:id="@+id/my_watchlist"
+            android:icon="@drawable/navbar_bullet"
+            android:title="@string/watchlist"/>
+        <item android:id="@+id/my_reminders"
+            android:icon="@drawable/navbar_bullet"
+            android:title="@string/reminders"/>
+    </group>
+    <group
+        android:id="@+id/group2"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/suggest_movie"
+            android:icon="@drawable/navbar_bullet"
+            android:title="@string/suggest_movie"/>
+    </group>
+    <group
+        android:id="@+id/group3"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/navbar_bullet"
+            android:title="@string/about"/>
+    </group>
+</menu>

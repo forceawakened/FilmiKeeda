@@ -3,6 +3,7 @@ package com.forceawakened.www.filmikeeda;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -52,7 +53,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_OVERVIEW + " text, " +
                 COLUMN_POSTER_PATH + " text)";
         db.execSQL(dbCreate);
-        Log.d("DBH", "outside oncreate==>" + dbCreate);
     }
 
     @Override
@@ -70,8 +70,7 @@ public class DBHelper extends SQLiteOpenHelper {
         database.close();
     }
 
-    public void addMovie(MovieInfo movie){
-        Log.d("DBH", movie.getTitle());
+    public void addMovie(mMovie movie) throws SQLiteConstraintException{
         ContentValues values = new ContentValues();
         values.put(COLUMN_MOVIE_ID, movie.getId());
         values.put(COLUMN_NAME, movie.getTitle());
@@ -82,13 +81,12 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(COLUMN_ADULT_CONTENT, movie.getAdultString());
         values.put(COLUMN_OVERVIEW, movie.getOverview());
         database = getReadableDatabase();
-        database.insert(TABLE_MOVIES, null, values);
+        database.insertOrThrow(TABLE_MOVIES, null, values);
         database.close();
     }
-    public ArrayList<MovieInfo> getAllMovies(){
+    public ArrayList<mMovie> getAllMovies(){
         database = getReadableDatabase();
-        Log.d("DBH", "readable db");
-        ArrayList<MovieInfo> arrayList = new ArrayList<>();
+        ArrayList<mMovie> arrayList = new ArrayList<>();
 
         Cursor cursor = database.query(TABLE_MOVIES, ALL_COLUMNS, null, null, null, null, null);
         cursor.moveToFirst();
@@ -101,14 +99,14 @@ public class DBHelper extends SQLiteOpenHelper {
         return  arrayList;
     }
 
-    private MovieInfo cursorToMovie(Cursor cursor){
-        MovieInfo movie = new MovieInfo();
+    private mMovie cursorToMovie(Cursor cursor){
+        mMovie movie = new mMovie();
         movie.setId(cursor.getInt(0));
         movie.setTitle(cursor.getString(1));
         movie.setReleaseDate(cursor.getString(2));
         movie.setRuntime(cursor.getInt(3));
         movie.setGenres(cursor.getString(4), cursor.getString(5));
-        if(cursor.getString(6) == "Yes")
+        if("Yes".equals(cursor.getString(6)))
             movie.setAdult(true);
         else
             movie.setAdult(false);

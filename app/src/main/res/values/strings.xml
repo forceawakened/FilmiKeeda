@@ -4,12 +4,27 @@
     <string name="string_search">Search</string>
     <string name="string_settings">Settings</string>
     <string name="search_hint">Search movies</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="string_most_popular">Most Popular</string>
     <string name="string_now_playing">Now Playing</string>
     <string name="string_upcoming">Upcoming</string>
     <string name="string_add_to_watchlist">Watch Later</string>
     <string name="string_set_reminder">Set Reminder</string>
+    <string name="string_choose_date">Choose Date</string>
+    <string name="string_choose_time">Choose Time</string>
+    <string name="string_ok">OK</string>
+    <string name="string_similar_movies">Similar Movies</string>
+    <string name="string_movie_cast">Cast</string>
+    <string name="string_credited_movies">Credited Works</string>
+    <string name="string_refresh">Click To Refresh</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="by_genres">By Genres</string>
+    <string name="watchlist">Watchlist</string>
+    <string name="about">About</string>
+    <string name="suggest_a_movie">Suggest A Movie</string>
+    <string name="reminders">Reminders</string>
+    <string name="tagline">Bug Movies...</string>
+    <string name="suggest_movie">Get Movie Suggestions</string>
+    <string name="homepage">Homepage</string>
 </resources>

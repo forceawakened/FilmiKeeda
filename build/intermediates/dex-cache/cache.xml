@@ -43,7 +43,7 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="ce1153de8595cdc0d7d9098432402697897269c5">
+        sha1="94e244869a76dc62ca3150e6d22e604a2763b4b1">
         <dex dex="/home/forceawakened/AndroidStudioProjects/FilmiKeeda/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_f00e5f63c2b640698fd146a50ffc6a8428fc0aae/classes.dex" />
     </item>
     <item
@@ -84,21 +84,21 @@
     </item>
     <item
         is-multidex="true"
-        jar="/home/forceawakened/AndroidStudioProjects/FilmiKeeda/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="8dace251effe87e1be735398ef291e74dd9d3a5c">
-        <dex dex="/home/forceawakened/AndroidStudioProjects/FilmiKeeda/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_e7ab0d02412180554a18eb5a3569d5437681c2f6/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
         jar="/home/forceawakened/AndroidStudioProjects/FilmiKeeda/app/build/intermediates/exploded-aar/com.android.support/support-compat/25.1.0/jars/classes.jar"
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
         sha1="ca3c7aa31e2726a400a6e552b93cb9f63c9a1e6d">
         <dex dex="/home/forceawakened/AndroidStudioProjects/FilmiKeeda/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-compat-25.1.0_cb295596f8f70a68ce7b9fe350b2e5d7688028e2/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/home/forceawakened/AndroidStudioProjects/FilmiKeeda/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="b458a108f32fbe305a83293f01db4c114f6ebcae">
+        <dex dex="/home/forceawakened/AndroidStudioProjects/FilmiKeeda/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_e7ab0d02412180554a18eb5a3569d5437681c2f6/classes.dex" />
     </item>
     <item
         is-multidex="true"

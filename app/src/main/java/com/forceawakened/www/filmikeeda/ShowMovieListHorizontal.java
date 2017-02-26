@@ -16,30 +16,23 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ShowMovieListHorizontal extends Fragment implements CustomAdapterHorizontal.ItemClickListener{
-    private JSONObject movieListObject;
-    private ArrayList<MovieInfo> movieList;
-    private android.support.v7.widget.RecyclerView recyclerView;
-    private android.support.v7.widget.RecyclerView.LayoutManager layoutManager;
-    private CustomAdapterHorizontal customAdapterHorizontal;
-    static final String MOVIE_LIST = "MOVIE_LIST";
-
+public class ShowMovieListHorizontal extends Fragment implements AdapterMovieHorizontal.ItemClickListener{
+    public static final String FLAG = "flag";
+    private ArrayList<mMovie> movieList;
+    static final String MOVIE_LIST = "movie list";
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.show_movie_list_horizontal, container, false);
-        recyclerView = (RecyclerView)v.findViewById(R.id.recycler_view);
-        //recyclerView.setHasFixedSize(true);
-
-        layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL, false);
+        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
-
         try {
-            movieListObject = new JSONObject(getArguments().getString(MOVIE_LIST));
-            movieList = MovieFactory.getMovieList(movieListObject);
-            //Log.d("SMLH", "on create view " + movieListObject);
-            customAdapterHorizontal = new CustomAdapterHorizontal(getActivity(), this, movieList);
-            recyclerView.setAdapter(customAdapterHorizontal);
+            JSONObject movieListObject = new JSONObject(getArguments().getString(MOVIE_LIST));
+            Integer flag = getArguments().getInt(FLAG);
+            movieList = MovieUtils.getMovieList(movieListObject, flag);
+            AdapterMovieHorizontal mAdapter = new AdapterMovieHorizontal(getActivity(), this, movieList);
+            recyclerView.setAdapter(mAdapter);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -50,9 +43,14 @@ public class ShowMovieListHorizontal extends Fragment implements CustomAdapterHo
 
     @Override
     public void onItemClick(int position) {
-        MovieInfo movie = movieList.get(position);
-        Intent intent = new Intent(getActivity(), ShowMovieInfo.class);
-        intent.putExtra(ShowMovieInfo.MOVIE_ID, movie.getId());
-        startActivity(intent);
+        mMovie movie = movieList.get(position);
+        Fragment fragment = new ShowMovieInfoFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(ShowMovieInfoFragment.MOVIE_ID, movie.getId());
+        fragment.setArguments(bundle);
+        getFragmentManager().beginTransaction()
+                .replace(R.id.loaded_content, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

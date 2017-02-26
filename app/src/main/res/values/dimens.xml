@@ -3,13 +3,22 @@
     <dimen name="padding_md">8dp</dimen>
     <dimen name="padding_lg">12dp</dimen>
     <dimen name="padding_xlg">16dp</dimen>
-    <dimen name="width_movie_col">128dp</dimen>
-    <dimen name="height_movie_col">128dp</dimen>
-    <dimen name="height_movie_row">128dp</dimen>
     <dimen name="text_size_xsm">12sp</dimen>
     <dimen name="text_size_sm">16sp</dimen>
     <dimen name="text_size_md">20sp</dimen>
     <dimen name="text_size_lg">24sp</dimen>
     <dimen name="text_size_xlg">28sp</dimen>
-    <dimen name="scroll_bar_sm">2dp</dimen>
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="img_row_width">96dp</dimen>
+    <dimen name="img_row_height">128dp</dimen>
+    <dimen name="img_col_width">128dp</dimen>
+    <dimen name="img_col_height">128dp</dimen>
+    <dimen name="txt_col_height">48dp</dimen>
+    <dimen name="col_width">104dp</dimen>
+    <dimen name="col_height">148dp</dimen>
+    <dimen name="row_height">148dp</dimen>
 </resources>
