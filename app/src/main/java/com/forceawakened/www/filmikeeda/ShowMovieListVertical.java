@@ -1,6 +1,5 @@
 package com.forceawakened.www.filmikeeda;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,16 +19,12 @@ public class ShowMovieListVertical extends Fragment implements AdapterMovieVerti
     private ArrayList<mMovie> movieList;
     static final String MOVIE_LIST = "movie list";
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        View v = inflater.inflate(R.layout.show_movie_list_vertical, container, false);
+        View v = inflater.inflate(R.layout.recycler_view_vertical, container, false);
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
-
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-
         try {
             JSONObject movieListObject = new JSONObject(getArguments().getString(MOVIE_LIST));
             movieList = MovieUtils.getMovieList(movieListObject, MovieUtils.MOVIE_RESULTS);

@@ -46,7 +46,7 @@
             android:textSize="@dimen/text_size_sm" />
         <TextView
             android:id="@+id/credited_movies_title"
-            android:text="@string/string_credited_movies"
+            android:text="@string/credited_movies"
             android:visibility="invisible"
             android:layout_below="@+id/actor_biography"
             android:layout_width="match_parent"

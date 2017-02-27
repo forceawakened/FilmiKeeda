@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorActivityBackground">#FFFFFF</color>
-    <color name="colorColItemBackground">#EEEEEE</color>
-    <color name="colorRowItemBackground">#EEEEEE</color>
+    <color name="colorActivityBackground">#EEEEEE</color>
+    <color name="colorColItemBackground">#FFFFFF</color>
+    <color name="colorRowItemBackground">#FFFFFF</color>
+    <color name="colorTextDark">#CCCCFF</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>

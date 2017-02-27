@@ -21,4 +21,7 @@
     <dimen name="col_width">104dp</dimen>
     <dimen name="col_height">148dp</dimen>
     <dimen name="row_height">148dp</dimen>
+    <dimen name="frame_layout_min_height">256dp</dimen>
+    <dimen name="my_img_width">208dp</dimen>
+    <dimen name="my_img_height">208dp</dimen>
 </resources>

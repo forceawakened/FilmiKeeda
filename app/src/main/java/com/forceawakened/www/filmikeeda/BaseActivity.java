@@ -1,10 +1,13 @@
 package com.forceawakened.www.filmikeeda;
 
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -37,13 +40,14 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ShowGenreList.CallBack, ShowWatchList.CallBack{
+public class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ShowGenreList.CallBack, NoConnection.Callback{
     private Toolbar mToolbar;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
+    protected ProgressDialog dialog;
     protected SearchView mSearchView;
     protected SearchManager mSearchManager;
-    private String title;
+    private int currentSelectedID;              //the item which is selected right now
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,20 +58,12 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         //set toolbar
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        //save title string
-        title = getResources().getString(R.string.app_name);
+        //save current selected item
+        currentSelectedID = R.id.homepage;
         //add toggle navigation bar button
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close){
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                if(title != null){
-                    mToolbar.setTitle(title);
-                }
-            }
-        };
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         //set toggle listeners
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
@@ -92,50 +88,58 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == R.id.action_search) {
-            //do stuff
-        }
-        else if (i == R.id.action_settings) {
-            //do stuff
-        }
-        else {
-            super.onOptionsItemSelected(item);
-        }
-        return true;
-    }
-
-    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment fragment = null;
+        Fragment fragment;
         int i = item.getItemId();
         if(i == R.id.homepage){
-            title = getString(R.string.homepage);
-            fragment = new HomepageFragment();
+            if(currentSelectedID != i){
+                currentSelectedID = i;
+                fragment = new HomepageFragment();
+            }
+            else{
+                return true;
+            }
         }
-        if(i == R.id.by_genres){
-            title = getString(R.string.by_genres);
-            fragment = new ShowGenreList();
+        else if(i == R.id.by_genres){
+            if(currentSelectedID != i){
+                currentSelectedID = i;
+                fragment = new ShowGenreList();
+            }
+            else{
+                return true;
+            }
         }
         else if(i == R.id.my_watchlist){
-            title = getString(R.string.watchlist);
-            fragment = new ShowWatchList();
+            if(currentSelectedID != i){
+                currentSelectedID = i;
+                fragment = new ShowWatchList();
+            }
+            else{
+                return true;
+            }
         }
-        else if(i == R.id.my_reminders){
-            title = getString(R.string.reminders);
+        else if(i == R.id.suggest_movie){
             //do stuff
             return true;
+        }
+        else if(i == R.id.about_us){
+            if(currentSelectedID != i){
+                currentSelectedID = i;
+                fragment = new AboutUs();
+            }
+            else{
+                return true;
+            }
         }
         else{
             //do stuff
             return true;
         }
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.loaded_content, fragment)
                 .addToBackStack(null)
                 .commit();
-        mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -147,24 +151,31 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         super.onBackPressed();
     }
 
-    //callback function to show watchlist
-    public void movieSelected(Integer id) {
-        Fragment fragment = new ShowMovieInfoFragment();
-        Bundle bundle = new Bundle();
-        fragment.setArguments(bundle);
-        bundle.putInt(ShowMovieInfoFragment.MOVIE_ID, id);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.loaded_content, fragment)
-                .addToBackStack(null)
-                .commit();
+    protected boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    //refreshes the page
+    public void Refresh() {
+        if(isNetworkAvailable()){
+            dialog = ProgressDialog.show(this, null, "Loading... Please Wait", true);
+            Fragment fragment = new HomepageFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.loaded_content, fragment)
+                    .addToBackStack(null)
+                    .commit();
+            dialog.dismiss();
+        }
     }
 
     //callback function to genre list
     public void genreSelected(Integer id) {
         String query = MovieUtils.getMovieDiscoverURL(new Pair<>("sort_by","popularity.desc"),new Pair<>("with_genres",id.toString()));
-        URL url;
         try {
-            url = new URL(query);
+            URL url = new URL(query);
+            dialog = ProgressDialog.show(this, null, "Loading... Please Wait", true);
             new MovieSearchTask().execute(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -207,9 +218,9 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         protected void onPostExecute(Integer result){
+            Fragment fragment;
             if(result == 1){
-                //Log.d("BA", "movie search: " + movieSearchResult.toString());
-                Fragment fragment = new ShowMovieListVertical();
+                fragment = new ShowMovieListVertical();
                 Bundle bundle = new Bundle();
                 bundle.putString(ShowMovieListVertical.MOVIE_LIST, movieSearchResult.toString());
                 fragment.setArguments(bundle);
@@ -220,10 +231,13 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
                         .commit();
             }
             else{
-                //Log.d("BA", "movie search failed");
-                //// TODO: 3/2/17  implement functionality when internet connection is broken
-                //// TODO: 3/2/17  show refresh button
+                fragment = new NoConnection();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.loaded_content, fragment)
+                        .commit();
             }
+            dialog.dismiss();
         }
     }
 }

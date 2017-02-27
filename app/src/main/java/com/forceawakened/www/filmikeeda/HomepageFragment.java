@@ -1,5 +1,6 @@
 package com.forceawakened.www.filmikeeda;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -47,6 +48,13 @@ public class HomepageFragment extends Fragment {
     protected class MovieDiscoverTask extends AsyncTask<URL, Void, Integer[]> {
         final Integer NO_OF_REQUEST = 3;
         StringBuilder[] movieDiscoverResult = new StringBuilder[NO_OF_REQUEST];
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = ProgressDialog.show(getActivity(), null, "Loading... Please Wait", true);
+        }
+
         @Override
         protected Integer[] doInBackground(URL... url) {
             Integer[] result = {0, 0, 0};
@@ -112,16 +120,12 @@ public class HomepageFragment extends Fragment {
                 }
             }
             if(flag == 0){
-                Fragment fragment = new NoConnection();
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.loaded_content, fragment)
-                        .addToBackStack(null)
-                        .commit();
+
             }
             else{
                 //do stuff
             }
+            dialog.dismiss();
         }
     }
 }

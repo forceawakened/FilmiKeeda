@@ -3,15 +3,20 @@ package com.forceawakened.www.filmikeeda;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteConstraintException;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,14 +30,19 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -48,6 +58,8 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
     private Button showDatePickerBtn;
     private boolean toggle, dateSet, timeSet;
     private RelativeLayout setReminderContent;
+    private ProgressDialog dialog;
+    private int status;
     private Calendar c;
     public static final String MOVIE_ID = "movie id";
     public static final String MOVIE_NAME = "movie name";
@@ -80,8 +92,10 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
         showTimePickerBtn.setOnClickListener(this);
         showDatePickerBtn.setOnClickListener(this);
         okBtn.setOnClickListener(this);
+        dialog = ProgressDialog.show(getActivity(), null, "Loading... Please Wait", true);
         //get movie id from intent
         Integer movieID = getArguments().getInt(MOVIE_ID, 1);
+        status = 0;
         try {
             //display information about movie
             URL url = new URL(MovieUtils.getMovieURL(movieID, ""));
@@ -111,8 +125,8 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
         toggle = false;
         timeSet = false;
         dateSet = false;
-        showDatePickerBtn.setText(R.string.string_choose_date);
-        showTimePickerBtn.setText(R.string.string_choose_time);
+        showDatePickerBtn.setText(R.string.choose_date);
+        showTimePickerBtn.setText(R.string.choose_time);
         setReminderContent.setVisibility(View.GONE);
     }
 
@@ -261,19 +275,17 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
                             .append(movie.getAllGenresName());
                     movieInfo.setText(movieInfoString);
                     //set movie overview
-                    String overview;
-                    if("".equals(movie.getOverview()))
-                        overview = "Overview N/A";
+                    if("N/A".equals(movie.getOverview()))
+                        movieOverview.setText("Overview N/A");
                     else
-                        overview = movie.getOverview();
-                    movieOverview.setText(overview);
+                        movieOverview.setText(movie.getOverview());
+                    ++status;
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-            else{
-                //// TODO: 3/2/17  implement functionality when internet connection is broken
-                //// TODO: 3/2/17  show refresh button
+            if(status == 3){
+                dialog.dismiss();
             }
         }
     }
@@ -326,9 +338,10 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
                         .add(R.id.similar_movies, fragment)
                         .commit();
                 (v.findViewById(R.id.similar_movies_title)).setVisibility(View.VISIBLE);
+                ++status;
             }
-            else{
-                //do stuff
+            if(status == 3){
+                dialog.dismiss();
             }
         }
     }
@@ -379,9 +392,10 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
                         .add(R.id.movie_cast, fragment)
                         .commit();
                 (v.findViewById(R.id.movie_cast_title)).setVisibility(View.VISIBLE);
+                ++status;
             }
-            else{
-                //do stuff
+            if(status == 3){
+                dialog.dismiss();
             }
         }
     }
@@ -391,16 +405,17 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
         @Override
         protected Void doInBackground(Void... params) {
             DBHelper dbHelper = new DBHelper(mContext);
-            dbHelper.open();
-            try {
-                dbHelper.addMovie(movie);
-                result = 1;
-            }
-            catch (SQLiteConstraintException e){
-                e.printStackTrace();
-            }
-            finally{
-                dbHelper.close();
+            if(!dbHelper.checkMovie(movie)){
+                try {
+                    dbHelper.addMovie(movie);
+                    result = 1;
+                }
+                catch (SQLiteConstraintException e){
+                    e.printStackTrace();
+                }
+                finally{
+                    dbHelper.close();
+                }
             }
             return null;
         }
@@ -409,6 +424,41 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
         protected void onPostExecute(Void aVoid) {
             //show toast based on result
             if(result == 1){
+                Target target = new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        String fileName = MovieUtils.getImgPath("", String.valueOf(movie.getId()));
+                        try {
+                            File file = new File(mContext.getFilesDir(), fileName);
+                        }
+                        catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                        byte[] by = bos.toByteArray();
+                        try {
+                            OutputStream os = mContext.openFileOutput(fileName, Context.MODE_PRIVATE);
+                            os.write(by);
+                            os.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+                        //do stuff
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+                        //do stuff
+                    }
+                };
+                Picasso.with(mContext)
+                        .load(MovieUtils.getPosterURL(movie.getPosterPath(), "w154"))
+                        .into(target);
                 Toast.makeText(mContext, "added to your watchlist", Toast.LENGTH_SHORT).show();
             }
             else{

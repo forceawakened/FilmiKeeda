@@ -13,20 +13,24 @@ import android.widget.Button;
  */
 
 public class NoConnection extends android.support.v4.app.Fragment {
+    private Callback mCallback;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.no_connection, container);
+        View v = inflater.inflate(R.layout.no_connection, container, false);
         Button refreshBtn = (Button) v.findViewById(R.id.refresh_btn);
+        mCallback = (Callback) getActivity();
         refreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                refreshScreen();
+                mCallback.Refresh();
             }
         });
         return v;
     }
-    void refreshScreen(){
 
+    public interface Callback{
+        void Refresh();
     }
+
 }

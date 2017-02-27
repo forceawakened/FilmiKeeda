@@ -39,21 +39,21 @@
     </item>
     <item
         is-multidex="true"
-        jar="/home/forceawakened/AndroidStudioProjects/FilmiKeeda/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.2"
-        sha1="94e244869a76dc62ca3150e6d22e604a2763b4b1">
-        <dex dex="/home/forceawakened/AndroidStudioProjects/FilmiKeeda/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_f00e5f63c2b640698fd146a50ffc6a8428fc0aae/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
         jar="/home/forceawakened/AndroidStudioProjects/FilmiKeeda/app/build/intermediates/exploded-aar/com.android.support/support-fragment/25.1.0/jars/classes.jar"
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
         sha1="2a53c4f3518116b8c6aee0e477233f0f7da8616f">
         <dex dex="/home/forceawakened/AndroidStudioProjects/FilmiKeeda/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-fragment-25.1.0_224f4f552287a58735ff68b3d271624352ebbd24/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/home/forceawakened/AndroidStudioProjects/FilmiKeeda/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="3d03dd1bedd0bf71544b5ceff97f287a3d945dc3">
+        <dex dex="/home/forceawakened/AndroidStudioProjects/FilmiKeeda/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_f00e5f63c2b640698fd146a50ffc6a8428fc0aae/classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -97,7 +97,7 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="b458a108f32fbe305a83293f01db4c114f6ebcae">
+        sha1="adb95eed13e1d3f2b8439fabed35e34f2e2a51ba">
         <dex dex="/home/forceawakened/AndroidStudioProjects/FilmiKeeda/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_e7ab0d02412180554a18eb5a3569d5437681c2f6/classes.dex" />
     </item>
     <item

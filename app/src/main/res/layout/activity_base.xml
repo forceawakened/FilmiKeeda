@@ -17,11 +17,15 @@
         <FrameLayout
             android:id="@+id/loaded_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@color/activity_background"
+            android:minHeight="@dimen/frame_layout_min_height"/>
     </LinearLayout>
     <android.support.design.widget.NavigationView
         android:id="@+id/navbar"
-        android:layout_width="280dp"
+        android:layout_width="288dp"
+        android:paddingTop="16dp"
+        android:paddingRight="16dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"

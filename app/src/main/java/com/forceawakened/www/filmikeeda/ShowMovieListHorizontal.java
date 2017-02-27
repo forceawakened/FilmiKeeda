@@ -23,7 +23,7 @@ public class ShowMovieListHorizontal extends Fragment implements AdapterMovieHor
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.show_movie_list_horizontal, container, false);
+        View v = inflater.inflate(R.layout.recycler_view_horizontal, container, false);
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);

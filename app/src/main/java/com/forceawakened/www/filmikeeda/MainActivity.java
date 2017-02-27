@@ -1,5 +1,6 @@
 package com.forceawakened.www.filmikeeda;
 
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -7,10 +8,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
-import android.widget.FrameLayout;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,43 +18,37 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity{
     public void onCreate(Bundle savedInstanceState) {
         handleIntent(getIntent());
         super.onCreate(savedInstanceState);
-        Fragment fragment;
         if(isNetworkAvailable()) {
-            fragment = new HomepageFragment();
+            Fragment fragment = new HomepageFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.loaded_content, fragment)
+                    .addToBackStack(null)
+                    .commit();
+
         }
         else{
-            fragment = new NoConnection();
+            Fragment fragment = new NoConnection();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.loaded_content, fragment) //don't add error page to backstack
+                    .commit();
         }
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.loaded_content, fragment)
-                .addToBackStack(null)
-                .commit();
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    //launch mode ---> singleTop so newIntent is called
+    //launch mode is singleTop so newIntent is called
     protected void onNewIntent(Intent intent) {
-        //Log.d("SRA", "on new intent");
         handleIntent(intent);
     }
 
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            //Log.d("SRA", "handle search query intent");
             String query = intent.getStringExtra(SearchManager.QUERY);
-            URL url;
+            dialog = ProgressDialog.show(this, null, "Loading... Please Wait", true);
             try {
-                url = new URL(MovieUtils.getMovieSearchURL(query));
-                new MovieSearchTask().execute(url);
+                new MovieSearchTask().execute(new URL(MovieUtils.getMovieSearchURL(query)));
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -68,7 +60,7 @@ public class MainActivity extends BaseActivity {
         StringBuilder movieSearchResult;
         @Override
         protected Integer doInBackground(URL... params) {
-            Log.d("BA", "movie search task");
+            //Log.d("BA", "movie search task");
             URL url=params[0];
             int result = 0;
             try {
@@ -100,7 +92,6 @@ public class MainActivity extends BaseActivity {
         @Override
         protected void onPostExecute(Integer result){
             if(result == 1){
-                //Log.d("SRA", "movie search: " + movieSearchResult.toString());
                 Fragment fragment = new ShowMovieListVertical();
                 Bundle bundle = new Bundle();
                 bundle.putString(ShowMovieListVertical.MOVIE_LIST, movieSearchResult.toString());
@@ -112,10 +103,13 @@ public class MainActivity extends BaseActivity {
                         .commit();
             }
             else{
-                //Log.d("SRA", "movie search failed");
-                //// TODO: 3/2/17  implement functionality when internet connection is broken
-                //// TODO: 3/2/17  show refresh button
+                //movie search conn unsuccessful
+                Fragment fragment = new NoConnection();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.loaded_content, fragment)
+                        .commit();
             }
+            dialog.dismiss();
         }
     }
 }

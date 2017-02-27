@@ -21,7 +21,7 @@
         <Button
             android:id="@+id/set_reminder_btn"
             android:drawableStart="@drawable/icon_alarm_small"
-            android:text="@string/string_set_reminder"
+            android:text="@string/set_reminder"
             android:visibility="invisible"
             android:layout_alignParentEnd="true"
             android:layout_below="@+id/movie_poster"
@@ -30,7 +30,7 @@
         <Button
             android:id="@+id/add_to_watchlist_btn"
             android:drawableStart="@drawable/icon_bookmark_white_small"
-            android:text="@string/string_add_to_watchlist"
+            android:text="@string/add_to_watchlist"
             android:visibility="invisible"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/movie_poster"
@@ -45,20 +45,20 @@
             <Button
                 android:id="@+id/show_date_picker_btn"
                 android:layout_alignParentStart="true"
-                android:text="@string/string_choose_date"
+                android:text="@string/choose_date"
                 android:layout_width="128dp"
                 android:layout_height="wrap_content" />
             <Button
                 android:id="@+id/show_time_picker_btn"
                 android:layout_alignParentRight="true"
-                android:text="@string/string_choose_time"
+                android:text="@string/choose_time"
                 android:layout_width="128dp"
                 android:layout_height="wrap_content" />
             <Button
                 android:id="@+id/ok_btn"
                 android:layout_centerInParent="true"
                 android:layout_below="@id/show_date_picker_btn"
-                android:text="@string/string_ok"
+                android:text="@string/ok"
                 android:layout_width="64dp"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
@@ -89,7 +89,7 @@
             android:textSize="@dimen/text_size_sm" />
         <TextView
             android:id="@+id/similar_movies_title"
-            android:text="@string/string_similar_movies"
+            android:text="@string/similar_movies"
             android:visibility="invisible"
             android:layout_marginTop="8dp"
             android:layout_below="@+id/movie_overview"
@@ -105,7 +105,7 @@
             android:layout_height="wrap_content"/>
         <TextView
             android:id="@+id/movie_cast_title"
-            android:text="@string/string_movie_cast"
+            android:text="@string/movie_cast"
             android:visibility="invisible"
             android:layout_below="@+id/similar_movies"
             android:layout_width="match_parent"

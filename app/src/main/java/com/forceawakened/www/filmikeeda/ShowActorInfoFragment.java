@@ -1,5 +1,6 @@
 package com.forceawakened.www.filmikeeda;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
@@ -29,12 +30,12 @@ import java.net.URL;
 
 public class ShowActorInfoFragment extends Fragment{
     private View v;
-    private Actor actor;
     private ImageView actorPoster;
     private TextView actorName, actorInfo, actorBiography;
     private Context mContext;
+    private ProgressDialog dialog;
+    private int status;
     public static final String ACTOR_ID = "actor id";
-    private Integer actorID;
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +47,9 @@ public class ShowActorInfoFragment extends Fragment{
         actorBiography = (TextView)v.findViewById(R.id.actor_biography);
         //take hold of this activity as context
         mContext = getActivity();
-        actorID = getArguments().getInt(ACTOR_ID, 1);
+        Integer actorID = getArguments().getInt(ACTOR_ID, 1);
+        dialog = ProgressDialog.show(getActivity(), null, "Loading... Please Wait", true);
+        status = 0;
         try {
             //display information about actor
             URL url = new URL(MovieUtils.getActorURL(actorID, ""));
@@ -98,7 +101,7 @@ public class ShowActorInfoFragment extends Fragment{
                 JSONObject jsonObject;
                 try {
                     jsonObject = new JSONObject(String.valueOf(response));
-                    actor = MovieUtils.parseActor(jsonObject);
+                    Actor actor = MovieUtils.parseActor(jsonObject);
                     //set actor poster
                     if(mContext == null)
                         Log.d("SAIF", "problem1");
@@ -130,13 +133,13 @@ public class ShowActorInfoFragment extends Fragment{
                     else
                         actorInfoString.append(actor.getBiography());
                     actorBiography.setText(actorInfoString);
+                    ++status;
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-            else{
-                //// TODO: 3/2/17  implement functionality when internet connection is broken
-                //// TODO: 3/2/17  show refresh button
+            if(status == 2){
+                dialog.dismiss();
             }
         }
     }
@@ -188,9 +191,10 @@ public class ShowActorInfoFragment extends Fragment{
                         .add(R.id.credited_movies, fragment)
                         .commit();
                 (v.findViewById(R.id.credited_movies_title)).setVisibility(View.VISIBLE);
+                ++status;
             }
-            else{
-                //do stuff
+            if(status == 2){
+                dialog.dismiss();
             }
         }
     }

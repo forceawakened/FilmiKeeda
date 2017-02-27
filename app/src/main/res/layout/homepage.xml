@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_md"
-        android:background="@color/colorActivityBackground"
         tools:context="com.forceawakened.www.filmikeeda.MainActivity">
         <TextView
             android:id="@+id/text_upcoming"
@@ -20,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_md"
-            android:text="@string/string_upcoming"
+            android:text="@string/upcoming"
             android:textStyle="bold"
             android:textSize="@dimen/text_size_sm"/>
         <FrameLayout
@@ -36,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_md"
-            android:text="@string/string_now_playing"
+            android:text="@string/now_playing"
             android:textStyle="bold"
             android:textSize="@dimen/text_size_sm"/>
         <FrameLayout
@@ -52,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_md"
-            android:text="@string/string_most_popular"
+            android:text="@string/most_popular"
             android:textStyle="bold"
             android:textSize="@dimen/text_size_sm"/>
         <FrameLayout

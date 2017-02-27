@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -226,5 +227,9 @@ public abstract class MovieUtils {
     //get urls about people such as info, credited movies
     public static String getActorURL(Integer actorID, String param) {
         return SITE + "person/" + actorID + param + "?api_key=" + MY_API + "&language=en-US";
+    }
+
+    public static String getImgPath(String filePath, String movieID){
+        return filePath + "MOVIE_" + movieID + ".png";
     }
 }

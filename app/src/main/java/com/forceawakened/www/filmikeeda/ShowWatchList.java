@@ -1,96 +1,82 @@
 package com.forceawakened.www.filmikeeda;
 
-import android.app.Activity;
-import android.content.Context;
+
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.File;
 import java.util.ArrayList;
 
 /**
  * Created by forceawakened on 3/2/17.
  */
 
-public class ShowWatchList extends Fragment {
-    private ArrayList<mMovie> watchList;
-    private ListView listView;
-    private ArrayAdapter<mMovie> adapter;
-    private CallBack mCallBack;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            mCallBack = (CallBack) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement OnHeadlineSelectedListener");
-        }
-    }
+public class ShowWatchList extends Fragment implements AdapterWatchlist.Callback{
+    private ArrayList<mMovie> movieList;
+    private RecyclerView recyclerView;
+    private AdapterWatchlist adapter;
+    private ProgressDialog dialog;
+    private mMovie movie; //movie that will be deleted
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.show_list, container, false);
-        listView = (ListView) v.findViewById(R.id.list_view);
-        listView.setOnItemClickListener(new ListItemClickListener());
+        View v = inflater.inflate(R.layout.recycler_view_vertical, container, false);
+        recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        movieList = new ArrayList<>();
+        adapter = new AdapterWatchlist(getActivity(), this, movieList);
+        recyclerView.setAdapter(adapter);
+        dialog = ProgressDialog.show(getActivity(), null, "Loading... Please Wait", true);
         new WatchListQueryTask().execute();
         return v;
     }
 
-    public class WatchListQueryTask extends AsyncTask<Void, Void, Void> {
+    @Override
+    public void deleteItem(int position) {
+        movie = movieList.get(position);
+        new DeleteMovieTask().execute();
+        movieList.remove(position);
+        recyclerView.removeViewAt(position);
+        adapter.notifyItemRemoved(position);
+        adapter.notifyItemRangeChanged(position, movieList.size());
+        File file = new File(MovieUtils.getImgPath(String.valueOf(getContext().getFilesDir()), String.valueOf(movie.getId())));
+        boolean result = file.delete();
+        Log.d("SWL", "result=" + result);
+        Toast.makeText(getActivity(), movie.getTitle() + " is removed from your watchlist", Toast.LENGTH_SHORT).show();
+    }
 
+    public class WatchListQueryTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            //Log.d("SWLF", "do in backg start");
             DBHelper dbHelper = new DBHelper(getActivity());
-            watchList = dbHelper.getAllMovies();
+            movieList.addAll(dbHelper.getAllMovies());
             return null;
         }
-
         @Override
         protected void onPostExecute(Void v){
-
-            adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, watchList);
-            listView.setAdapter(adapter);
-
-            //// TODO: 3/2/17 store movie poster and display using ShowMovieListVertical
-            //// TODO: 3/2/17 give users option to delete from watchlist
+            adapter.notifyDataSetChanged();
+            dialog.dismiss();
         }
     }
 
-    private class ListItemClickListener implements ListView.OnItemClickListener{
+    public class DeleteMovieTask extends AsyncTask<Void, Void, Void> {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
+        protected Void doInBackground(Void... params) {
+            DBHelper dbHelper = new DBHelper(getActivity());
+            dbHelper.deleteMovie(movie);
+            return null;
         }
-    }
-
-    private void selectItem(int position) {
-        mCallBack.movieSelected(watchList.get(position).getId());
-    }
-
-    public interface CallBack{
-        void movieSelected(Integer id);
     }
 }

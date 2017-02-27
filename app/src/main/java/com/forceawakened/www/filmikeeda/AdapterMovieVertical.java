@@ -16,7 +16,6 @@ import java.util.ArrayList;
  * Created by forceawakened on 2/2/17.
  */
 public class AdapterMovieVertical extends RecyclerView.Adapter<AdapterMovieVertical.ViewHolder>{
-
     private Context mContext;
     private ItemClickListener mItemClickListener;
     private ArrayList<mMovie> movieList;

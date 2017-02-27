@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-<Button
-    android:id="@+id/refresh_btn"
-    android:text="@string/string_refresh"
-    android:layout_gravity="center"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" />
-</FrameLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="342dp"
+    android:layout_height="342dp">
+    <TextView
+        android:id="@+id/no_internet_notif"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/no_internet_notif"
+        android:layout_centerInParent="true"
+        android:textSize="@dimen/text_size_md"/>
+    <Button
+        android:id="@+id/refresh_btn"
+        android:layout_marginTop="16dp"
+        android:text="@string/refresh"
+        android:layout_below="@+id/no_internet_notif"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

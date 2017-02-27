@@ -1,5 +1,6 @@
 package com.forceawakened.www.filmikeeda;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ public class ShowGenreList extends Fragment {
     private ListView listView;
     private ArrayList<Genre> genreList;
     private ArrayAdapter<Genre> adapter;
+    private ProgressDialog dialog;
     private CallBack mCallBack;
 
     @Override
@@ -51,12 +53,12 @@ public class ShowGenreList extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.show_list, container, false);
+        View v = inflater.inflate(R.layout.list_view, container, false);
         try {
             genreList = new ArrayList<>();
             String genreQueryURL = MovieUtils.getGenreSearchURL();
+            dialog = ProgressDialog.show(getActivity(), null, "Loading... Please Wait", true);
             new GenreQueryTask().execute(new URL(genreQueryURL));
-
             listView = (ListView) v.findViewById(R.id.list_view);
             listView.setOnItemClickListener(new ListItemClickListener());
             adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, genreList);
@@ -106,16 +108,12 @@ public class ShowGenreList extends Fragment {
         protected void onPostExecute(Integer result){
             if(result == 1){
                 try {
-                    genreList = MovieUtils.getGenreList(new JSONObject(genreQueryResult.toString()));
+                    genreList.addAll(MovieUtils.getGenreList(new JSONObject(genreQueryResult.toString())));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, genreList);
-                listView.setAdapter(adapter);
-            }
-            else{
-                //// TODO: 3/2/17  implement functionality when internet connection is broken
-                //// TODO: 3/2/17  show refresh button
+                adapter.notifyDataSetChanged();
+                dialog.dismiss();
             }
         }
     }
