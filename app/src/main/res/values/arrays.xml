@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="drawer_options">
-        <item>By Genres</item>
-        <item>Watchlist</item>
-        <item>Reminders</item>
-        <item>About</item>
-    </string-array>
-</resources>

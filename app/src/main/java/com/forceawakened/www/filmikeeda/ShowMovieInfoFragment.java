@@ -7,14 +7,13 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteConstraintException;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,7 +36,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -59,11 +56,8 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
     private boolean toggle, dateSet, timeSet;
     private RelativeLayout setReminderContent;
     private ProgressDialog dialog;
-    private int status;
+    private int status, ok;
     private Calendar c;
-    public static final String MOVIE_ID = "movie id";
-    public static final String MOVIE_NAME = "movie name";
-    final Integer TIME_OUT_INTERVAL = 2000;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -94,8 +88,8 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
         okBtn.setOnClickListener(this);
         dialog = ProgressDialog.show(getActivity(), null, "Loading... Please Wait", true);
         //get movie id from intent
-        Integer movieID = getArguments().getInt(MOVIE_ID, 1);
-        status = 0;
+        Integer movieID = getArguments().getInt(MovieUtils.MOVIE_ID, 1);
+        status = ok = 0;
         try {
             //display information about movie
             URL url = new URL(MovieUtils.getMovieURL(movieID, ""));
@@ -135,12 +129,14 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
         switch(v.getId()) {
             case R.id.add_to_watchlist_btn:
                 //add mContext movie to users watchlist
+                dialog = ProgressDialog.show(getActivity(), null, "Loading... Please Wait", true);
                 new AddToDBTask().execute();
                 break;
             case R.id.set_reminder_btn:
                 //show or hide time & date picker buttons
                 if(!toggle) {
                     setReminderContent.setVisibility(View.VISIBLE);
+                    c = Calendar.getInstance();
                     toggle = true;
                 }
                 else {
@@ -161,10 +157,6 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
                         showDatePickerBtn.setText(dayOfMonth + " / " + month + " / " + year);
                         if(!dateSet){
                             dateSet = true;
-                        }
-                        //set values in calendar
-                        if(c == null){
-                            c = Calendar.getInstance();
                         }
                         c.set(Calendar.YEAR, year);
                         c.set(Calendar.MONTH, month);
@@ -188,9 +180,6 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
                             timeSet = true;
                         }
                         //set values in calendar
-                        if(c == null){
-                            c = Calendar.getInstance();
-                        }
                         c.set(Calendar.HOUR, hourOfDay);
                         c.set(Calendar.MINUTE, minute);
                     }
@@ -203,10 +192,19 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
                     //sets alarm
                     AlarmManager alarmMgr = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
                     Intent intent = new Intent(mContext, AlarmReceiver.class);
-                    intent.putExtra(MOVIE_NAME, movie.getTitle());
-                    PendingIntent alarmIntent = PendingIntent.getBroadcast(mContext, 0, intent, 0);
-                    //alarmMgr.set(AlarmManager.ELAPSED_REALTIME, 10000, alarmIntent);
+                    intent.putExtra(MovieUtils.MOVIE_NAME, movie.getTitle());
+                    intent.putExtra(MovieUtils.MOVIE_ID, movie.getId());
+                    SharedPreferences pref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                    int last_reminder_id = pref.getInt(MovieUtils.LAST_REMINDER_ID, 0);
+                    ++last_reminder_id;
+                    SharedPreferences.Editor ed = pref.edit();
+                    ed.putInt(MovieUtils.LAST_REMINDER_ID, last_reminder_id);
+                    ed.commit();
+                    PendingIntent alarmIntent = PendingIntent.getBroadcast(mContext, last_reminder_id, intent, 0);
+                    //alarmMgr.set(AlarmManager.ELAPSED_REALTIME, 5000, alarmIntent);
                     alarmMgr.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), alarmIntent);
+                    Log.d("SMIF", c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE));
+                    saveImage(MovieUtils.REMINDER);
                     Toast.makeText(mContext, "reminder set for " + movie.getTitle(), Toast.LENGTH_SHORT).show();
                 }
                 resetReminderToolbar();
@@ -222,7 +220,7 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
             int result = 0;
             try {
                 HttpURLConnection urlconn = (HttpURLConnection) url.openConnection();
-                urlconn.setConnectTimeout(TIME_OUT_INTERVAL);
+                urlconn.setConnectTimeout(MovieUtils.TIMEOUT_INTERVAL);
                 int statuscode = urlconn.getResponseCode();
                 if(statuscode == HttpURLConnection.HTTP_OK){
                     try {
@@ -275,15 +273,17 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
                             .append(movie.getAllGenresName());
                     movieInfo.setText(movieInfoString);
                     //set movie overview
+                    String overview;
                     if("N/A".equals(movie.getOverview()))
-                        movieOverview.setText("Overview N/A");
+                        overview = "Overview N/A";
                     else
-                        movieOverview.setText(movie.getOverview());
-                    ++status;
+                        overview = movie.getOverview();
+                        movieOverview.setText(overview);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
+            ++status;
             if(status == 3){
                 dialog.dismiss();
             }
@@ -298,7 +298,7 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
             int result = 0;
             try {
                 HttpURLConnection urlconn = (HttpURLConnection) url.openConnection();
-                urlconn.setConnectTimeout(TIME_OUT_INTERVAL);
+                urlconn.setConnectTimeout(MovieUtils.TIMEOUT_INTERVAL);
                 int statuscode = urlconn.getResponseCode();
                 if(statuscode == HttpURLConnection.HTTP_OK){
                     try {
@@ -338,8 +338,8 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
                         .add(R.id.similar_movies, fragment)
                         .commit();
                 (v.findViewById(R.id.similar_movies_title)).setVisibility(View.VISIBLE);
-                ++status;
             }
+            ++status;
             if(status == 3){
                 dialog.dismiss();
             }
@@ -354,7 +354,7 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
             int result = 0;
             try {
                 HttpURLConnection urlconn = (HttpURLConnection) url.openConnection();
-                urlconn.setConnectTimeout(TIME_OUT_INTERVAL);
+                urlconn.setConnectTimeout(MovieUtils.TIMEOUT_INTERVAL);
                 int statuscode = urlconn.getResponseCode();
                 if(statuscode == HttpURLConnection.HTTP_OK){
                     try {
@@ -392,8 +392,8 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
                         .add(R.id.movie_cast, fragment)
                         .commit();
                 (v.findViewById(R.id.movie_cast_title)).setVisibility(View.VISIBLE);
-                ++status;
             }
+            ++status;
             if(status == 3){
                 dialog.dismiss();
             }
@@ -424,47 +424,50 @@ public class ShowMovieInfoFragment extends Fragment implements View.OnClickListe
         protected void onPostExecute(Void aVoid) {
             //show toast based on result
             if(result == 1){
-                Target target = new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        String fileName = MovieUtils.getImgPath("", String.valueOf(movie.getId()));
-                        try {
-                            File file = new File(mContext.getFilesDir(), fileName);
-                        }
-                        catch (Exception e){
-                            e.printStackTrace();
-                        }
-                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
-                        byte[] by = bos.toByteArray();
-                        try {
-                            OutputStream os = mContext.openFileOutput(fileName, Context.MODE_PRIVATE);
-                            os.write(by);
-                            os.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Drawable errorDrawable) {
-                        //do stuff
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-                        //do stuff
-                    }
-                };
-                Picasso.with(mContext)
-                        .load(MovieUtils.getPosterURL(movie.getPosterPath(), "w154"))
-                        .into(target);
+                saveImage(MovieUtils.WATCHLIST);
                 Toast.makeText(mContext, "added to your watchlist", Toast.LENGTH_SHORT).show();
             }
             else{
                 Toast.makeText(mContext, "already in your watchlist", Toast.LENGTH_SHORT).show();
             }
+            dialog.dismiss();
         }
+    }
+
+    void saveImage(final int who){
+        String s = MovieUtils.getImgPath(mContext.getFilesDir() + File.separator, String.valueOf(movie.getId()), who);
+        //Log.d("SMIF", s);
+        File f = new File(s);
+        if(f.exists())  return;
+        Target target = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                String name = MovieUtils.getImgPath("", String.valueOf(movie.getId()),who);
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                byte[] by = bos.toByteArray();
+                try {
+                    OutputStream os = mContext.openFileOutput(name, Context.MODE_PRIVATE);
+                    os.write(by);
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+                //do stuff
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+                //do stuff
+            }
+        };
+        Picasso.with(mContext)
+                .load(MovieUtils.getPosterURL(movie.getPosterPath(), "w154"))
+                .into(target);
     }
 
 }

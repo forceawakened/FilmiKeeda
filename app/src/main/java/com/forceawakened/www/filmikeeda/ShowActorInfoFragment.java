@@ -103,10 +103,8 @@ public class ShowActorInfoFragment extends Fragment{
                     jsonObject = new JSONObject(String.valueOf(response));
                     Actor actor = MovieUtils.parseActor(jsonObject);
                     //set actor poster
-                    if(mContext == null)
-                        Log.d("SAIF", "problem1");
-                    if(actorPoster == null)
-                        Log.d("SAIF", "problem2");
+                    if(mContext == null) Log.d("SAIF", "problem1");
+                    if(actorPoster == null) Log.d("SAIF", "problem2");
                     Picasso.with(mContext)
                             .load(MovieUtils.getPosterURL(actor.getPosterPath(), "w342"))
                             //.error(R.drawable.icon_image_placeholder)
@@ -133,11 +131,11 @@ public class ShowActorInfoFragment extends Fragment{
                     else
                         actorInfoString.append(actor.getBiography());
                     actorBiography.setText(actorInfoString);
-                    ++status;
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
+            ++status;
             if(status == 2){
                 dialog.dismiss();
             }
@@ -191,8 +189,8 @@ public class ShowActorInfoFragment extends Fragment{
                         .add(R.id.credited_movies, fragment)
                         .commit();
                 (v.findViewById(R.id.credited_movies_title)).setVisibility(View.VISIBLE);
-                ++status;
             }
+            ++status;
             if(status == 2){
                 dialog.dismiss();
             }

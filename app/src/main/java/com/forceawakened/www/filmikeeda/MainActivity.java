@@ -26,7 +26,6 @@ public class MainActivity extends BaseActivity{
             Fragment fragment = new HomepageFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.loaded_content, fragment)
-                    .addToBackStack(null)
                     .commit();
 
         }
@@ -94,7 +93,7 @@ public class MainActivity extends BaseActivity{
             if(result == 1){
                 Fragment fragment = new ShowMovieListVertical();
                 Bundle bundle = new Bundle();
-                bundle.putString(ShowMovieListVertical.MOVIE_LIST, movieSearchResult.toString());
+                bundle.putString(MovieUtils.MOVIE_LIST, movieSearchResult.toString());
                 fragment.setArguments(bundle);
                 getSupportFragmentManager()
                         .beginTransaction()

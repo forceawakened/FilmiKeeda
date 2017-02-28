@@ -17,7 +17,6 @@ import java.util.ArrayList;
 
 public class ShowMovieListVertical extends Fragment implements AdapterMovieVertical.ItemClickListener{
     private ArrayList<mMovie> movieList;
-    static final String MOVIE_LIST = "movie list";
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -26,7 +25,7 @@ public class ShowMovieListVertical extends Fragment implements AdapterMovieVerti
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         try {
-            JSONObject movieListObject = new JSONObject(getArguments().getString(MOVIE_LIST));
+            JSONObject movieListObject = new JSONObject(getArguments().getString(MovieUtils.MOVIE_LIST));
             movieList = MovieUtils.getMovieList(movieListObject, MovieUtils.MOVIE_RESULTS);
             AdapterMovieVertical mAdapter = new AdapterMovieVertical(getActivity(), this, movieList);
             recyclerView.setAdapter(mAdapter);
@@ -43,7 +42,7 @@ public class ShowMovieListVertical extends Fragment implements AdapterMovieVerti
         mMovie movie = movieList.get(position);
         Fragment fragment = new ShowMovieInfoFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ShowMovieInfoFragment.MOVIE_ID, movie.getId());
+        bundle.putInt(MovieUtils.MOVIE_ID, movie.getId());
         fragment.setArguments(bundle);
         getFragmentManager().beginTransaction()
                 .replace(R.id.loaded_content, fragment)

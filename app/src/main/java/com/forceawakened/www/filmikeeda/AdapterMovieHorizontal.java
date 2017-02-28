@@ -41,7 +41,7 @@ public class AdapterMovieHorizontal extends RecyclerView.Adapter<AdapterMovieHor
                 .load(MovieUtils.getPosterURL(movie.getPosterPath(), "w92"))
                 //.error(R.drawable.icon_image_placeholder_small)
                 //.placeholder(R.drawable.icon_image_placeholder_small)
-                //// TODO: 26/2/17 decent placeholder
+                //// TODO: 26/2/17 need a decent placeholder
                 .into(holder.moviePoster);
         holder.movieTitle.setText(movie.getTitle());
     }

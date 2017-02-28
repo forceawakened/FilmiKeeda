@@ -20,13 +20,21 @@ public abstract class MovieUtils {
     private static final String SCHEME = "https";
     private static final String AUTH = "api.themoviedb.org";
     private static final String AUTH_IMG = "image.tmdb.org";
-    //for queries
+    //for api queries
     private static final String SITE = "https://api.themoviedb.org/3/";
-    private static final String MY_API = "496891e3b20e6e8f9b2a9817ca00c709";       //secret api key to be kept safe
-    //some constants
-    public static final Integer MOVIE_RESULTS = 1763;     //arbitrary numbers assigned as constants
-    public static final Integer MOVIE_CAST = 9564;
-    public static final Integer TIMEOUT_INTERVAL = 2000;
+    private static final String MY_API = "496891e3b20e6e8f9b2a9817ca00c709";   //secret api key :p
+    //some constant strings
+    public static final String MOVIE_NAME = "movie name";
+    public static final String MOVIE_ID = "movie id";
+    public static final String MOVIE_LIST = "movie list";
+    public static final String LAST_REMINDER_ID = "last reminder id";
+    //some constants integers
+    public static final int TIMEOUT_INTERVAL = 2000;
+    //arbitrary numbers assigned as constants
+    public static final int MOVIE_RESULTS = 1763;
+    public static final int MOVIE_CAST = 9564;
+    public static final int WATCHLIST = 132;
+    public static final int REMINDER = 217;
 
     //take a json object representing a movie and returns movie object
     public static mMovie parseMovie(JSONObject movieObject) throws JSONException {
@@ -229,7 +237,8 @@ public abstract class MovieUtils {
         return SITE + "person/" + actorID + param + "?api_key=" + MY_API + "&language=en-US";
     }
 
-    public static String getImgPath(String filePath, String movieID){
-        return filePath + "MOVIE_" + movieID + ".png";
+    //returns image path in file directory
+    public static String getImgPath(String filePath, String movieID, int who){
+        return filePath + "MOVIE_" + movieID + "_" + who + ".png";
     }
 }

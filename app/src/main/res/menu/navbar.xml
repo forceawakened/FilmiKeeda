@@ -13,6 +13,7 @@
             android:icon="@drawable/navbar_bullet"
             android:title="@string/watchlist"/>
     </group>
+    <!--
     <group
         android:id="@+id/group2"
         android:checkableBehavior="single">
@@ -21,6 +22,7 @@
             android:icon="@drawable/navbar_bullet"
             android:title="@string/suggest_movie"/>
     </group>
+    -->
     <group
         android:id="@+id/group3"
         android:checkableBehavior="single">

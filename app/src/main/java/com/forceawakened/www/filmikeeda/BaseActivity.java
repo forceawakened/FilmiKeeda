@@ -47,7 +47,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     protected ProgressDialog dialog;
     protected SearchView mSearchView;
     protected SearchManager mSearchManager;
-    private int currentSelectedID;              //the item which is selected right now
+    //private int currentSelectedID;              //the item which is selected right now
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         //save current selected item
-        currentSelectedID = R.id.homepage;
+        //currentSelectedID = R.id.homepage;
         //add toggle navigation bar button
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
@@ -92,44 +92,30 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         Fragment fragment;
         int i = item.getItemId();
         if(i == R.id.homepage){
-            if(currentSelectedID != i){
-                currentSelectedID = i;
+            if(isNetworkAvailable()) {
                 fragment = new HomepageFragment();
             }
             else{
-                return true;
+                fragment = new NoConnection();
             }
         }
         else if(i == R.id.by_genres){
-            if(currentSelectedID != i){
-                currentSelectedID = i;
+            if(isNetworkAvailable()) {
                 fragment = new ShowGenreList();
             }
             else{
-                return true;
+                fragment = new NoConnection();
             }
         }
         else if(i == R.id.my_watchlist){
-            if(currentSelectedID != i){
-                currentSelectedID = i;
-                fragment = new ShowWatchList();
-            }
-            else{
-                return true;
-            }
+            fragment = new ShowWatchList();
         }
-        else if(i == R.id.suggest_movie){
+        //else if(i == R.id.suggest_movie){
             //do stuff
-            return true;
-        }
+            //return true;
+        //}
         else if(i == R.id.about_us){
-            if(currentSelectedID != i){
-                currentSelectedID = i;
-                fragment = new AboutUs();
-            }
-            else{
-                return true;
-            }
+            fragment = new AboutUs();
         }
         else{
             //do stuff
@@ -151,7 +137,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         super.onBackPressed();
     }
 
-    protected boolean isNetworkAvailable() {
+    boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
@@ -160,13 +146,11 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     //refreshes the page
     public void Refresh() {
         if(isNetworkAvailable()){
-            dialog = ProgressDialog.show(this, null, "Loading... Please Wait", true);
             Fragment fragment = new HomepageFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.loaded_content, fragment)
                     .addToBackStack(null)
                     .commit();
-            dialog.dismiss();
         }
     }
 
@@ -222,7 +206,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             if(result == 1){
                 fragment = new ShowMovieListVertical();
                 Bundle bundle = new Bundle();
-                bundle.putString(ShowMovieListVertical.MOVIE_LIST, movieSearchResult.toString());
+                bundle.putString(MovieUtils.MOVIE_LIST, movieSearchResult.toString());
                 fragment.setArguments(bundle);
                 getSupportFragmentManager()
                         .beginTransaction()

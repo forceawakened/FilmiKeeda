@@ -39,12 +39,16 @@ public class AdapterWatchlist extends RecyclerView.Adapter<AdapterWatchlist.View
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         mMovie movie = movieList.get(position);
-        String moviePosterPath = mContext.getFilesDir() + File.separator + "MOVIE_" + movie.getId() + ".png";
+        //set movie title
+        holder.movieTitle.setText(movie.getTitle());
+        //set movie poster
+        String moviePosterPath = MovieUtils.getImgPath(mContext.getFilesDir() + File.separator, String.valueOf(movie.getId()), MovieUtils.WATCHLIST);
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         Bitmap bitmap = BitmapFactory.decodeFile(moviePosterPath, options);
-        holder.movieTitle.setText(movie.getTitle());
-        holder.moviePoster.setImageBitmap(bitmap);
+        if(bitmap != null) {
+            holder.moviePoster.setImageBitmap(bitmap);
+        }
     }
 
     @Override

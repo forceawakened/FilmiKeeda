@@ -38,7 +38,6 @@ public class ShowWatchList extends Fragment implements AdapterWatchlist.Callback
         movieList = new ArrayList<>();
         adapter = new AdapterWatchlist(getActivity(), this, movieList);
         recyclerView.setAdapter(adapter);
-        dialog = ProgressDialog.show(getActivity(), null, "Loading... Please Wait", true);
         new WatchListQueryTask().execute();
         return v;
     }
@@ -48,12 +47,17 @@ public class ShowWatchList extends Fragment implements AdapterWatchlist.Callback
         movie = movieList.get(position);
         new DeleteMovieTask().execute();
         movieList.remove(position);
-        recyclerView.removeViewAt(position);
+        //recyclerView.removeViewAt(position);
         adapter.notifyItemRemoved(position);
-        adapter.notifyItemRangeChanged(position, movieList.size());
-        File file = new File(MovieUtils.getImgPath(String.valueOf(getContext().getFilesDir()), String.valueOf(movie.getId())));
-        boolean result = file.delete();
-        Log.d("SWL", "result=" + result);
+        //adapter.notifyItemRangeChanged(position, movieList.size());
+        File file = new File(MovieUtils.getImgPath(String.valueOf(getContext().getFilesDir() + File.separator) , String.valueOf(movie.getId()), MovieUtils.WATCHLIST));
+        if(file.exists()) {
+            boolean result = file.delete();
+            //Log.d("SWL", "file deleted: proof--> result=" + result);
+        }
+        else{
+            //Log.d("SWL", "file does not exist so not deleted");
+        }
         Toast.makeText(getActivity(), movie.getTitle() + " is removed from your watchlist", Toast.LENGTH_SHORT).show();
     }
 
@@ -67,7 +71,6 @@ public class ShowWatchList extends Fragment implements AdapterWatchlist.Callback
         @Override
         protected void onPostExecute(Void v){
             adapter.notifyDataSetChanged();
-            dialog.dismiss();
         }
     }
 

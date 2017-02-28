@@ -46,7 +46,7 @@ public class ShowMovieListHorizontal extends Fragment implements AdapterMovieHor
         mMovie movie = movieList.get(position);
         Fragment fragment = new ShowMovieInfoFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ShowMovieInfoFragment.MOVIE_ID, movie.getId());
+        bundle.putInt(MovieUtils.MOVIE_ID, movie.getId());
         fragment.setArguments(bundle);
         getFragmentManager().beginTransaction()
                 .replace(R.id.loaded_content, fragment)

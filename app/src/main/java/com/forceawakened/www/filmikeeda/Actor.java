@@ -1,5 +1,7 @@
 package com.forceawakened.www.filmikeeda;
 
+import android.util.Log;
+
 /**
  * Created by forceawakened on 25/2/17.
  */
@@ -56,17 +58,17 @@ public class Actor {
 
     public String getName() {return name;}
 
-    public String getPosterPath() {return ("".equals(posterPath) || posterPath == null ? "N/A" : posterPath);}
+    public String getPosterPath() {return (posterPath == null || "".equals(posterPath) ? "N/A" : posterPath);}
 
-    public String getNickNames() {return ("".equals(nicknames) || nicknames == null ? "N/A" : nicknames);}
+    public String getNickNames() {return (nicknames == null || "".equals(nicknames) ? "N/A" : nicknames);}
 
-    public String getBirthDate() {return ("".equals(birthdate) || birthdate == null ? "N/A" : birthdate);}
+    public String getBirthDate() {return (("null".equals(birthdate) || "".equals(birthdate)) ? "N/A" : birthdate);}
 
-    public String getDeathDate() {return ("".equals(deathdate) || deathdate == null ? "N/A" : deathdate);}
+    public String getDeathDate() {return ("null".equals(deathdate) || "".equals(deathdate) ? "N/A" : deathdate);}
 
-    public String getBiography() {return ("".equals(biography) || biography == null ? "N/A" : biography);}
+    public String getBiography() {return ("null".equals(biography) || "".equals(biography) ? "N/A" : biography);}
 
     public String getGender() {
-        return (gender == 1 ? "Female" : (gender == 2 ? "Male" : "N/A"));
+        return (gender == null ? "N/A" : (gender == 2 ? "Male" : "Female"));
     }
 }

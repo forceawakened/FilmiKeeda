@@ -52,7 +52,7 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="3d03dd1bedd0bf71544b5ceff97f287a3d945dc3">
+        sha1="b823ce45e8a01aece4f444fb2451d801c24b1e01">
         <dex dex="/home/forceawakened/AndroidStudioProjects/FilmiKeeda/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_f00e5f63c2b640698fd146a50ffc6a8428fc0aae/classes.dex" />
     </item>
     <item
@@ -97,7 +97,7 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="adb95eed13e1d3f2b8439fabed35e34f2e2a51ba">
+        sha1="bc760ada5fdf53cc42881b9518940e4967520ce3">
         <dex dex="/home/forceawakened/AndroidStudioProjects/FilmiKeeda/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_e7ab0d02412180554a18eb5a3569d5437681c2f6/classes.dex" />
     </item>
     <item
